@@ -33,12 +33,17 @@ dependencies {
     compile "com.android.support:appcompat-v7:$project.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$project.supportLibraryVersion"
     compile "com.android.support:support-v4:$project.supportLibraryVersion"
+
     compile "com.google.firebase:firebase-core:$project.firebaseVersion"
     compile "com.google.android.gms:play-services-maps:$project.googleServicesVersion"
+
+    compile "com.jakewharton:butterknife:$project.butterKnifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$project.butterKnifeVersion"
 
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-maps:11.0.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.firebaseui:firebase-ui:2.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

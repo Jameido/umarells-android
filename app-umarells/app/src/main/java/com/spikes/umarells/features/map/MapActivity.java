@@ -1,7 +1,10 @@
-package com.spikes.umarells;
+package com.spikes.umarells.features.map;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,8 +12,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseUser;
+import com.spikes.umarells.R;
+import com.spikes.umarells.shared.AppCompatActivityExt;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivityExt
+        implements OnMapReadyCallback {
+
+    private static final String TAG = MapActivity.class.getSimpleName();
+
+    public static Intent getStartIntent(Context context){
+        Intent startIntent = new Intent(context, MapActivity.class);
+        return startIntent;
+    }
 
     private GoogleMap mMap;
 
@@ -42,5 +56,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    @Override
+    protected void onAuthenticationSuccessful(FirebaseUser user) {
+        super.onAuthenticationSuccessful(user);
+        //TODO enable fab
     }
 }
