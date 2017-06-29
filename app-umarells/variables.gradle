@@ -1,0 +1,22 @@
+ext {
+    // global variables for app & libraries
+    javaVersion = JavaVersion.VERSION_1_8
+
+    sdkCompileVersion = 25
+    sdkMinimumVersion = 19
+    sdkTargetVersion = 25
+
+    buildToolsVersion = '26.0.0'
+
+    // most updated libraries version
+    supportLibraryVersion = '25.3.1'
+    googleServicesVersion = '10.2.1'
+    firebaseVersion = '11.0.1'
+    crashlyticsVersion = '2.6.0'
+    gsonVersion = '2.8.0'
+    okHttpVersion = '3.7.0'
+    butterKnifeVersion = '8.6.0'
+    retrofitVersion = '2.2.0'
+    rxAndroidVersion = '2.0.1'
+    rxJavaVersion = '2.0.1'
+}
