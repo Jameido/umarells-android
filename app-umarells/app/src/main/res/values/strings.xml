@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Umarells</string>
     <string name="title_activity_map">Map</string>
+
+    <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
+    <string name="user_marker_title">Your Position</string>
 </resources>
