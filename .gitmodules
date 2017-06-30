@@ -1,0 +1,3 @@
+[submodule "app-umarells/easy-location-manager"]
+	path = app-umarells/easy-location-manager
+	url = https://github.com/Jameido/easy-location-manager-android
