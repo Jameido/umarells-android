@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,14 +14,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.spikes.easylocationmanager.ActivityEasyLocationManager;
 import com.spikes.easylocationmanager.EasyLocationManager;
 import com.spikes.umarells.R;
+import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 import com.spikes.umarells.shared.Constants;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -29,11 +33,11 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
     /**
      * TODO Add missing features:
-     *  - Taking a picture
-     *  - Inserting description
-     *  - Rating
-     *  - Start date end date with datepicker
-     *  - Request delete
+     * - Taking a picture
+     * - Inserting description
+     * - Rating
+     * - Start date end date with datepicker
+     * - Request delete
      */
 
     private static final String TAG = BuildingSiteDetailActivity.class.getSimpleName();
@@ -42,6 +46,9 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
         return startIntent;
     }
+
+    @BindView(R.id.et_building_site_name)
+    TextInputEditText mEtName;
 
     private GoogleMap mMap;
     private Marker mUserMarker;
@@ -105,7 +112,7 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         Location lastKnownLocation = mEasyLocationManager.getLastKnownLocation();
         if (null != lastKnownLocation) {
             currentPosition = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        }else {
+        } else {
             currentPosition = new LatLng(Constants.DEF_LAT, Constants.DEF_LNG);
         }
 
@@ -123,8 +130,25 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
     }
 
     @OnClick(R.id.button_save_building_site)
-    void saveBuildingSite(){
+    void saveBuildingSite() {
+        BuildingSite buildingSite = new BuildingSite(
+                mEtName.getText().toString(),
+                mUserMarker.getPosition().latitude,
+                mUserMarker.getPosition().longitude
+        );
 
+        mBuildingSitesDatabase.push()
+                .setValue(
+                        buildingSite.toMap(),
+                        (databaseError, databaseReference) -> {
+                            if (null != databaseError) {
+                                //TODO show error
+                            } else {
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        }
+                );
     }
 
     private void initDataSource() {
@@ -153,7 +177,7 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
     }
 
-    private void onMarkerPositionChanged(LatLng position){
+    private void onMarkerPositionChanged(LatLng position) {
 
     }
 }
