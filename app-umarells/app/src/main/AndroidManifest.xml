@@ -40,7 +40,7 @@
             android:name=".features.map.MapActivity"
             android:label="@string/title_activity_map">
         </activity>
-        <activity android:name=".features.add.AddBuildingSiteActivity">
+        <activity android:name=".features.detail.BuildingSiteDetailActivity">
         </activity>
     </application>
 

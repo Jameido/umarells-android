@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
@@ -20,11 +21,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.spikes.easylocationmanager.ActivityEasyLocationManager;
+import com.spikes.easylocationmanager.EasyLocationManager;
 import com.spikes.umarells.R;
-import com.spikes.umarells.features.add.AddBuildingSiteActivity;
+import com.spikes.umarells.features.detail.BuildingSiteDetailActivity;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
-import com.spikes.umarells.shared.PositionManager;
+import com.spikes.umarells.shared.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +38,7 @@ import butterknife.OnClick;
 import static com.spikes.umarells.shared.Constants.RC_ADD_BUILDING_SITE;
 
 public class MapActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback, PositionManager.OnPositionListener {
+        implements OnMapReadyCallback, EasyLocationManager.OnLocationChangedListener {
 
     private static final String TAG = MapActivity.class.getSimpleName();
 
@@ -50,12 +53,20 @@ public class MapActivity extends AppCompatActivityExt
     private GoogleMap mMap;
     private DatabaseReference mBuildingSitesDatabase;
     private ChildEventListener mBuildingSiteEventListener;
+    private ActivityEasyLocationManager mEasyLocationManager;
     private Map<String, Marker> mMarkers = new HashMap<>();
+    private Marker mUserMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+
+        mEasyLocationManager = new ActivityEasyLocationManager(this);
+        mEasyLocationManager.setOnLocationChangedListener(this);
+        mEasyLocationManager.requestPositionUpdates();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -68,24 +79,30 @@ public class MapActivity extends AppCompatActivityExt
         if (null != mBuildingSiteEventListener) {
             mBuildingSitesDatabase.removeEventListener(mBuildingSiteEventListener);
         }
+        if(null != mEasyLocationManager) {
+            mEasyLocationManager.onDestroy();
+        }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mEasyLocationManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng currentPosition;
+        Location lastKnownLocation = mEasyLocationManager.getLastKnownLocation();
+        if (null != lastKnownLocation) {
+            currentPosition = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        }else {
+            currentPosition = new LatLng(Constants.DEF_LAT, Constants.DEF_LNG);
+        }
+
+        moveUserMarker(currentPosition);
 
         initDataSource();
     }
@@ -103,13 +120,16 @@ public class MapActivity extends AppCompatActivityExt
     }
 
     @Override
-    public void onPositionChanged(Location location) {
-
+    public void onLocationChanged(Location location) {
+        mEasyLocationManager.removePositionUpdates();
+        if (null != mMap) {
+            moveUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
     }
 
     @OnClick(R.id.fab_add_building_site)
     void addNewBuildingSite(){
-        startActivityForResult(AddBuildingSiteActivity.getStartIntent(this), RC_ADD_BUILDING_SITE);
+        startActivityForResult(BuildingSiteDetailActivity.getStartIntent(this), RC_ADD_BUILDING_SITE);
     }
 
     private void initDataSource() {
@@ -176,4 +196,22 @@ public class MapActivity extends AppCompatActivityExt
             addMarker(id, latitude, longitude, name);
         }
     }
+
+    private void addUserMarker(LatLng position) {
+        mUserMarker = mMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(getString(R.string.user_marker_title))
+                .draggable(true)
+        );
+    }
+
+    private void moveUserMarker(LatLng position) {
+        if (null != mUserMarker) {
+            mUserMarker.setPosition(position);
+        } else {
+            addUserMarker(position);
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
+    }
+
 }

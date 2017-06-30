@@ -1,12 +1,12 @@
-package com.spikes.umarells.features.add;
+package com.spikes.umarells.features.detail;
 
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -15,49 +15,59 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.spikes.easylocationmanager.ActivityEasyLocationManager;
+import com.spikes.easylocationmanager.EasyLocationManager;
 import com.spikes.umarells.R;
 import com.spikes.umarells.shared.AppCompatActivityExt;
-import com.spikes.umarells.shared.PositionManager;
+import com.spikes.umarells.shared.Constants;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class AddBuildingSiteActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback, PositionManager.OnPositionListener {
+public class BuildingSiteDetailActivity extends AppCompatActivityExt
+        implements OnMapReadyCallback, EasyLocationManager.OnLocationChangedListener {
 
+    /**
+     * TODO Add missing features:
+     *  - Taking a picture
+     *  - Inserting description
+     *  - Rating
+     *  - Start date end date with datepicker
+     *  - Request delete
+     */
 
-    private static final String TAG = AddBuildingSiteActivity.class.getSimpleName();
+    private static final String TAG = BuildingSiteDetailActivity.class.getSimpleName();
 
     public static Intent getStartIntent(Context context) {
-        Intent startIntent = new Intent(context, AddBuildingSiteActivity.class);
+        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
         return startIntent;
     }
 
     private GoogleMap mMap;
     private Marker mUserMarker;
     private DatabaseReference mBuildingSitesDatabase;
-    private PositionManager mPositionManager;
-
-    @BindView(R.id.text_building_site_lat)
-    AppCompatTextView mTextLat;
-    @BindView(R.id.text_building_site_lng)
-    AppCompatTextView mTextLng;
-
+    private ActivityEasyLocationManager mEasyLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_building_site);
+        setContentView(R.layout.activity_building_site_detail);
 
-        mPositionManager = new PositionManager(this);
-        mPositionManager.setOnPositionListener(this);
-        mPositionManager.setCoordinatorLayout(ButterKnife.findById(this, R.id.coordinator));
-        mPositionManager.requestPositionUpdates();
+        mEasyLocationManager = new ActivityEasyLocationManager(this);
+        mEasyLocationManager.setOnLocationChangedListener(this);
+        mEasyLocationManager.setCoordinatorLayout(ButterKnife.findById(this, R.id.coordinator));
+        mEasyLocationManager.requestPositionUpdates();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mEasyLocationManager.onDestroy();
     }
 
     @Override
@@ -68,18 +78,9 @@ public class AddBuildingSiteActivity extends AppCompatActivityExt
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mPositionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mEasyLocationManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -100,22 +101,31 @@ public class AddBuildingSiteActivity extends AppCompatActivityExt
             }
         });
 
-        Location lastKnownLocation = mPositionManager.getLastKnownLocation();
+        LatLng currentPosition;
+        Location lastKnownLocation = mEasyLocationManager.getLastKnownLocation();
         if (null != lastKnownLocation) {
-            moveUserMarker(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+            currentPosition = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        }else {
+            currentPosition = new LatLng(Constants.DEF_LAT, Constants.DEF_LNG);
         }
+
+        moveUserMarker(currentPosition);
 
         initDataSource();
     }
 
     @Override
-    public void onPositionChanged(Location position) {
-        mPositionManager.removePositionUpdates();
+    public void onLocationChanged(Location location) {
+        mEasyLocationManager.removePositionUpdates();
         if (null != mMap) {
-            moveUserMarker(new LatLng(position.getLatitude(), position.getLongitude()));
+            moveUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
         }
     }
 
+    @OnClick(R.id.button_save_building_site)
+    void saveBuildingSite(){
+
+    }
 
     private void initDataSource() {
         mBuildingSitesDatabase = FirebaseDatabase
@@ -140,11 +150,10 @@ public class AddBuildingSiteActivity extends AppCompatActivityExt
         } else {
             addUserMarker(position);
         }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
     }
 
     private void onMarkerPositionChanged(LatLng position){
-        mTextLat.setText(String.valueOf(position.latitude));
-        mTextLng.setText(String.valueOf(position.longitude));
 
     }
 }

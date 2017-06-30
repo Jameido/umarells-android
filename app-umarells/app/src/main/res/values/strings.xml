@@ -2,6 +2,14 @@
     <string name="app_name">Umarells</string>
     <string name="title_activity_map">Map</string>
 
-    <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
+
+    <!-- ADD BUILDING SITE -->
+    <string name="hint_building_site_name">Name…</string>
+    <string name="hint_building_site_position">Position</string>
+    <string name="help_building_site_position">Move the pin on the map to choose the building sites\'s position.</string>
     <string name="user_marker_title">Your Position</string>
+    <string name="action_save">Save</string>
+
+    <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
+
 </resources>
