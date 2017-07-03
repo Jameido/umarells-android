@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +32,11 @@ import butterknife.OnClick;
 public class BuildingSiteDetailActivity extends AppCompatActivityExt
         implements OnMapReadyCallback, EasyLocationManager.OnLocationChangedListener {
 
+
+    private static int MODE_VIEW = 0;
+    private static int MODE_NEW = 1;
+    private static int MODE_EDIT = 2;
+
     /**
      * TODO Add missing features:
      * - Taking a picture
@@ -42,7 +48,17 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
     private static final String TAG = BuildingSiteDetailActivity.class.getSimpleName();
 
-    public static Intent getStartIntent(Context context) {
+    public static Intent getStartIntentNew(Context context) {
+        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
+        return startIntent;
+    }
+
+    public static Intent getStartIntentEdit(Context context) {
+        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
+        return startIntent;
+    }
+
+    public static Intent getStartIntentView(Context context) {
         Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
         return startIntent;
     }

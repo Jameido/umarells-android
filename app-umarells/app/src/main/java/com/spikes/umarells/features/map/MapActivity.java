@@ -12,6 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -129,7 +130,7 @@ public class MapActivity extends AppCompatActivityExt
 
     @OnClick(R.id.fab_add_building_site)
     void addNewBuildingSite(){
-        startActivityForResult(BuildingSiteDetailActivity.getStartIntent(this), RC_ADD_BUILDING_SITE);
+        startActivityForResult(BuildingSiteDetailActivity.getStartIntentNew(this), RC_ADD_BUILDING_SITE);
     }
 
     private void initDataSource() {
@@ -200,6 +201,7 @@ public class MapActivity extends AppCompatActivityExt
     private void addUserMarker(LatLng position) {
         mUserMarker = mMap.addMarker(new MarkerOptions()
                 .position(position)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
                 .title(getString(R.string.user_marker_title))
                 .draggable(true)
         );
