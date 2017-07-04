@@ -2,198 +2,140 @@ package com.spikes.umarells.features.detail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.spikes.easylocationmanager.ActivityEasyLocationManager;
-import com.spikes.easylocationmanager.EasyLocationManager;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.spikes.umarells.R;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
-import com.spikes.umarells.shared.Constants;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class BuildingSiteDetailActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback, EasyLocationManager.OnLocationChangedListener {
+        implements OnMapReadyCallback {
 
-
-    private static int MODE_VIEW = 0;
-    private static int MODE_NEW = 1;
-    private static int MODE_EDIT = 2;
-
-    /**
-     * TODO Add missing features:
-     * - Taking a picture
-     * - Inserting description
-     * - Rating
-     * - Start date end date with datepicker
-     * - Request delete
-     */
+    private static final String EXTRA_ID = "EXTRA_ID";
 
     private static final String TAG = BuildingSiteDetailActivity.class.getSimpleName();
 
-    public static Intent getStartIntentNew(Context context) {
+    public static Intent getStartIntent(Context context, String buildingSiteId) {
         Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
+        startIntent.putExtra(EXTRA_ID, buildingSiteId);
         return startIntent;
     }
 
-    public static Intent getStartIntentEdit(Context context) {
-        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
-        return startIntent;
-    }
-
-    public static Intent getStartIntentView(Context context) {
-        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
-        return startIntent;
-    }
-
-    @BindView(R.id.et_building_site_name)
-    TextInputEditText mEtName;
+    @BindView(R.id.text_building_site_name)
+    AppCompatTextView mTextName;
+    @BindView(R.id.text_building_site_start)
+    AppCompatTextView mTextStart;
+    @BindView(R.id.text_building_site_end)
+    AppCompatTextView mTextEnd;
+    @BindView(R.id.text_building_site_address)
+    AppCompatTextView mTextAddress;
+    @BindView(R.id.text_building_site_description)
+    AppCompatTextView mTextDescription;
+    @BindView(R.id.recycler_gallery)
+    RecyclerView mRecyclerGallery;
 
     private GoogleMap mMap;
-    private Marker mUserMarker;
-    private DatabaseReference mBuildingSitesDatabase;
-    private ActivityEasyLocationManager mEasyLocationManager;
+    private GalleryAdapter mGalleryAdapter;
+    private BuildingSite mBuildingSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_building_site_detail);
 
-        mEasyLocationManager = new ActivityEasyLocationManager(this);
-        mEasyLocationManager.setOnLocationChangedListener(this);
-        mEasyLocationManager.setCoordinatorLayout(ButterKnife.findById(this, R.id.coordinator));
-        mEasyLocationManager.requestPositionUpdates();
+        Bundle extras = getIntent().getExtras();
+        if (null != extras && extras.containsKey(EXTRA_ID)) {
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+            initDataSource(extras.getString(EXTRA_ID, ""));
+
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map_building_site);
+            mapFragment.getMapAsync(this);
+        } else {
+            finish();
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mEasyLocationManager.onDestroy();
-    }
+    private void initDataSource(String buildingSiteId) {
+        FirebaseDatabase
+                .getInstance()
+                .getReference()
+                .child("building_sites")
+                .child(buildingSiteId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mBuildingSite = dataSnapshot.getValue(BuildingSite.class);
+                        addBuildingSiteMarker();
+                        fillBuildingSiteData();
+                    }
 
-    @Override
-    protected boolean isLoginRequired() {
-        return true;
-    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mEasyLocationManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                    }
+                });
+
+        Query imagesQuery = FirebaseDatabase
+                .getInstance()
+                .getReference()
+                .child("building_images")
+                .child(buildingSiteId);
+
+        mGalleryAdapter = new GalleryAdapter(imagesQuery);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerGallery.setLayoutManager(mLayoutManager);
+        mRecyclerGallery.setAdapter(mGalleryAdapter);
+
+        SnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(mRecyclerGallery);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker marker) {
+        addBuildingSiteMarker();
+    }
 
-            }
+    private void fillBuildingSiteData() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        mTextName.setText(mBuildingSite.getName());
+        mTextStart.setText(dateFormat.format(new Date(mBuildingSite.getStart())));
+        mTextEnd.setText(dateFormat.format(mBuildingSite.getEnd()));
+        mTextAddress.setText(mBuildingSite.getAddress());
+        mTextDescription.setText(mBuildingSite.getDescription());
+    }
 
-            @Override
-            public void onMarkerDrag(Marker marker) {
 
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                onMarkerPositionChanged(marker.getPosition());
-            }
-        });
-
-        LatLng currentPosition;
-        Location lastKnownLocation = mEasyLocationManager.getLastKnownLocation();
-        if (null != lastKnownLocation) {
-            currentPosition = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        } else {
-            currentPosition = new LatLng(Constants.DEF_LAT, Constants.DEF_LNG);
+    private void addBuildingSiteMarker() {
+        if (null != mMap && null != mBuildingSite) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng())));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng() - 0.015)));
         }
-
-        moveUserMarker(currentPosition);
-
-        initDataSource();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mEasyLocationManager.removePositionUpdates();
-        if (null != mMap) {
-            moveUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
-        }
-    }
-
-    @OnClick(R.id.button_save_building_site)
-    void saveBuildingSite() {
-        BuildingSite buildingSite = new BuildingSite(
-                mEtName.getText().toString(),
-                mUserMarker.getPosition().latitude,
-                mUserMarker.getPosition().longitude
-        );
-
-        mBuildingSitesDatabase.push()
-                .setValue(
-                        buildingSite.toMap(),
-                        (databaseError, databaseReference) -> {
-                            if (null != databaseError) {
-                                //TODO show error
-                            } else {
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        }
-                );
-    }
-
-    private void initDataSource() {
-        mBuildingSitesDatabase = FirebaseDatabase
-                .getInstance()
-                .getReference()
-                .child("building_sites");
-    }
-
-    private void addUserMarker(LatLng position) {
-        mUserMarker = mMap.addMarker(new MarkerOptions()
-                .position(position)
-                .title(getString(R.string.user_marker_title))
-                .draggable(true)
-        );
-        onMarkerPositionChanged(position);
-    }
-
-    private void moveUserMarker(LatLng position) {
-        if (null != mUserMarker) {
-            mUserMarker.setPosition(position);
-            onMarkerPositionChanged(position);
-        } else {
-            addUserMarker(position);
-        }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
-    }
-
-    private void onMarkerPositionChanged(LatLng position) {
-
     }
 }

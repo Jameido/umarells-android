@@ -30,16 +30,16 @@ import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 import com.spikes.umarells.shared.Constants;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.spikes.umarells.shared.Constants.RC_ADD_BUILDING_SITE;
-
 public class MapActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback, EasyLocationManager.OnLocationChangedListener {
+        implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, EasyLocationManager.OnLocationChangedListener {
 
     private static final String TAG = MapActivity.class.getSimpleName();
 
@@ -66,7 +66,7 @@ public class MapActivity extends AppCompatActivityExt
 
         mEasyLocationManager = new ActivityEasyLocationManager(this);
         mEasyLocationManager.setOnLocationChangedListener(this);
-        mEasyLocationManager.requestPositionUpdates();
+        mEasyLocationManager.requestLocationUpdates();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,7 +80,7 @@ public class MapActivity extends AppCompatActivityExt
         if (null != mBuildingSiteEventListener) {
             mBuildingSitesDatabase.removeEventListener(mBuildingSiteEventListener);
         }
-        if(null != mEasyLocationManager) {
+        if (null != mEasyLocationManager) {
             mEasyLocationManager.onDestroy();
         }
     }
@@ -94,12 +94,12 @@ public class MapActivity extends AppCompatActivityExt
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnInfoWindowClickListener(this);
         LatLng currentPosition;
         Location lastKnownLocation = mEasyLocationManager.getLastKnownLocation();
         if (null != lastKnownLocation) {
             currentPosition = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        }else {
+        } else {
             currentPosition = new LatLng(Constants.DEF_LAT, Constants.DEF_LNG);
         }
 
@@ -122,15 +122,21 @@ public class MapActivity extends AppCompatActivityExt
 
     @Override
     public void onLocationChanged(Location location) {
-        mEasyLocationManager.removePositionUpdates();
+        mEasyLocationManager.removeLocationUpdates();
         if (null != mMap) {
             moveUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
         }
     }
 
     @OnClick(R.id.fab_add_building_site)
-    void addNewBuildingSite(){
-        startActivityForResult(BuildingSiteDetailActivity.getStartIntentNew(this), RC_ADD_BUILDING_SITE);
+    void addNewBuildingSite() {
+        if (null != getUser()) {
+            addDummyBuildingSite();
+        } else {
+            startAuthentication();
+        }
+        //TODO open form activity
+        //startActivityForResult(BuildingSiteDetailActivity.getStartIntentNew(this), RC_ADD_BUILDING_SITE);
     }
 
     private void initDataSource() {
@@ -172,12 +178,12 @@ public class MapActivity extends AppCompatActivityExt
     }
 
     private void addMarker(String id, double latitude, double longitude, String name) {
-        mMarkers.put(
-                id,
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(latitude, longitude))
-                        .title(name))
+        Marker newMarker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .title(name)
         );
+        newMarker.setTag(id);
+        mMarkers.put(id, newMarker);
     }
 
     private void removeMarker(String id) {
@@ -193,6 +199,7 @@ public class MapActivity extends AppCompatActivityExt
             Marker marker = mMarkers.get(id);
             marker.setPosition(new LatLng(latitude, longitude));
             marker.setTitle(name);
+            marker.setTag(id);
         } else {
             addMarker(id, latitude, longitude, name);
         }
@@ -216,4 +223,43 @@ public class MapActivity extends AppCompatActivityExt
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
     }
 
+    private void addDummyBuildingSite() {
+        LatLng location = getRandomLocation();
+        long start = getRandomTimestamp(Timestamp.valueOf("1992-01-01 00:00:00").getTime());
+
+        BuildingSite buildingSite = new BuildingSite(
+                "Building Site" + mMarkers.size(),
+                getString(R.string.ph_description),
+                location.latitude,
+                location.longitude,
+                start,
+                getRandomTimestamp(start)
+        );
+
+        mBuildingSitesDatabase.push()
+                .setValue(
+                        buildingSite.toMap(),
+                        (databaseError, databaseReference) -> {
+                            if (null != databaseError) {
+                                //TODO show error
+                            }
+                        }
+                );
+    }
+
+    public static LatLng getRandomLocation() {
+        Random rnd = new Random();
+        return new LatLng((rnd.nextDouble() * (46.035972 - 45.504675)) + 45.504675, (rnd.nextDouble() * (13.778351 - 7.8892407)) + 7.8892407);
+    }
+
+    public static long getRandomTimestamp(long start) {
+        long end = Timestamp.valueOf("2020-12-31 23:59:59").getTime();
+        long diff = end - start + 1;
+        return start + (long) (Math.random() * diff);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        startActivity(BuildingSiteDetailActivity.getStartIntent(MapActivity.this, String.valueOf(marker.getTag())));
+    }
 }

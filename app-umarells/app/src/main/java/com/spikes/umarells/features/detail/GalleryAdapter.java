@@ -24,7 +24,7 @@ public class GalleryAdapter extends FirebaseRecyclerAdapter<String, GalleryAdapt
     @Override
     protected void populateViewHolder(ImageViewHolder viewHolder, String model, int position) {
         Glide.with(viewHolder.itemView.getContext())
-                .load(Uri.parse(model))
+                .load(model)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .fitCenter()
@@ -33,12 +33,7 @@ public class GalleryAdapter extends FirebaseRecyclerAdapter<String, GalleryAdapt
                 .into((AppCompatImageView)viewHolder.itemView);
     }
 
-    @Override
-    public int getItemCount() {
-        return super.getItemCount() + 1;
-    }
-
-    class ImageViewHolder extends RecyclerView.ViewHolder {
+    public static class ImageViewHolder extends RecyclerView.ViewHolder {
 
         public ImageViewHolder(View itemView) {
             super(itemView);

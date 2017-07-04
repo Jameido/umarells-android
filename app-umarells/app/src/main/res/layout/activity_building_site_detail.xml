@@ -8,61 +8,109 @@
     android:layout_height="match_parent"
     tools:context="com.spikes.umarells.features.detail.BuildingSiteDetailActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ei_building_site_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/et_building_site_name"
-                android:layout_width="match_parent"
+            <android.support.constraint.Guideline
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_building_site_name"/>
-        </android.support.design.widget.TextInputLayout>
+                android:id="@+id/guideline"
+                app:layout_constraintGuide_percent="0.4"
+                android:orientation="vertical"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/text_building_site_position"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_building_site_position"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ei_building_site_name"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_gallery"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/list_item_gallery"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/text_building_site_position_help"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/help_building_site_position"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_building_site_position"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_building_site_name"
+                style="@style/TextAppearance.AppCompat.Large"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recycler_gallery"
+                tools:text="New building"/>
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/button_save_building_site"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_building_site_position_help"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_building_site_start"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/text_building_site_end"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                android:drawableStart="@drawable/ic_date_range_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
+                tools:text="12/12/2012"/>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/button_save_building_site"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/action_save"
-            app:layout_constraintTop_toBottomOf="@+id/map"/>
-    </android.support.constraint.ConstraintLayout>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_building_site_end"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:drawableStart="@drawable/ic_date_range_black_24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_building_site_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
+                tools:text="12/12/2014"/>
+
+            <fragment
+                android:id="@+id/map_building_site"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toEndOf="@+id/guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:cameraZoom="13"
+                app:mapType="normal"
+                app:liteMode="true"
+                app:layout_constraintTop_toTopOf="@+id/text_building_site_address"
+                app:layout_constraintBottom_toBottomOf="@+id/text_building_site_address"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_building_site_address"
+                android:background="@drawable/gradient_hor_white"
+                app:layout_constraintBottom_toBottomOf="@+id/text_building_site_address"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_building_site_address"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:minHeight="200dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_building_site_location"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_building_site_start"/>
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_building_site_description"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:maxLines="3"
+                app:layout_constraintTop_toBottomOf="@+id/text_building_site_address"
+                tools:text="@string/ph_description"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

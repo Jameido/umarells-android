@@ -3,12 +3,14 @@
     <string name="title_activity_map">Map</string>
 
 
-    <!-- ADD BUILDING SITE -->
+    <!-- BUILDING SITE DETAIL-->
     <string name="hint_building_site_name">Name…</string>
-    <string name="hint_building_site_position">Position</string>
-    <string name="help_building_site_position">Move the pin on the map to choose the building sites\'s position.</string>
+    <string name="hint_building_site_location">Position</string>
+    <string name="help_building_site_location">Move the pin on the map to choose the building sites\'s position.</string>
     <string name="user_marker_title">Your Position</string>
     <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
+    <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
 
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
 
