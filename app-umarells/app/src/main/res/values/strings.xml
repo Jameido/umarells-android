@@ -13,5 +13,6 @@
     <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
 
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

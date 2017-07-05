@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class BuildingSiteDetailActivity extends AppCompatActivityExt
         implements OnMapReadyCallback {
@@ -93,6 +94,17 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        addBuildingSiteMarker();
+    }
+
+    @OnClick(R.id.fab_add_picture)
+    void openCameraActivity(){
+        startActivity(CameraActivity.getStartIntent(this));
+    }
+
     private void initDataSource(String buildingSiteId) {
         FirebaseDatabase
                 .getInstance()
@@ -126,12 +138,6 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
         SnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(mRecyclerGallery);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        addBuildingSiteMarker();
     }
 
     private void fillBuildingSiteData() {

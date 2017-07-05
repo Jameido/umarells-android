@@ -33,6 +33,13 @@
                 tools:listitem="@layout/list_item_gallery"
                 app:layout_constraintTop_toTopOf="parent"/>
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_add_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
+                app:layout_constraintEnd_toEndOf="@+id/recycler_gallery"
+                app:layout_constraintBottom_toBottomOf="@+id/recycler_gallery" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_building_site_name"
