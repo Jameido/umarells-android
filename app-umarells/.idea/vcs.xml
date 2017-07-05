@@ -2,5 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/easy-location-manager" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/easy-photo-picker" vcs="Git" />
   </component>
 </project>

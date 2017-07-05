@@ -1,1 +1,1 @@
-include ':app', ':easy-location-manager'
+include ':app', ':easy-location-manager', ':easy-photo-picker'
