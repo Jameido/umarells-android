@@ -1,3 +1,6 @@
 [submodule "app-umarells/easy-location-manager"]
 	path = app-umarells/easy-location-manager
 	url = https://github.com/Jameido/easy-location-manager-android
+[submodule "app-umarells/easy-photo-picker"]
+	path = app-umarells/easy-photo-picker
+	url = https://github.com/Jameido/easy-photo-picker-android

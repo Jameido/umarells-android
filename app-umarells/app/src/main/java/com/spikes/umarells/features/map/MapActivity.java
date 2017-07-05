@@ -232,6 +232,7 @@ public class MapActivity extends AppCompatActivityExt
                 getString(R.string.ph_description),
                 location.latitude,
                 location.longitude,
+                "Building Address" + mMarkers.size(),
                 start,
                 getRandomTimestamp(start)
         );

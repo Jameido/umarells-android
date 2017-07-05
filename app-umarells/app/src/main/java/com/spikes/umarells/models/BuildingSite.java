@@ -31,7 +31,7 @@ public class BuildingSite {
     @PropertyName(PROP_LNG)
     private Double mLng;
     @PropertyName(PROP_ADDRESS)
-    private String address;
+    private String mAddress;
     @PropertyName(PROP_START)
     private Long mStart;
     @PropertyName(PROP_END)
@@ -40,11 +40,12 @@ public class BuildingSite {
     public BuildingSite() {
     }
 
-    public BuildingSite(String name, String description, Double lat, Double lng, Long start, Long end) {
+    public BuildingSite(String name, String description, Double lat, Double lng, String address, Long start, Long end) {
         mName = name;
         mDescription = description;
         mLat = lat;
         mLng = lng;
+        mAddress = address;
         mStart = start;
         mEnd = end;
     }
@@ -74,7 +75,7 @@ public class BuildingSite {
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
     public Map<String, Object> toMap() {
@@ -83,6 +84,7 @@ public class BuildingSite {
         map.put(PROP_DESCRIPTION, mDescription);
         map.put(PROP_LAT, mLat);
         map.put(PROP_LNG, mLng);
+        map.put(PROP_ADDRESS, mAddress);
         map.put(PROP_START, mStart);
         map.put(PROP_END, mEnd);
 
