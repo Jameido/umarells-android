@@ -15,12 +15,12 @@ package com.spikes.umarells.features.detail;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,20 +33,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.spikes.easyphotopicker.ActivityEasyCameraPicker;
 import com.spikes.umarells.R;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class BuildingSiteDetailActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback {
+        implements OnMapReadyCallback,
+        ActivityEasyCameraPicker.OnResult {
 
     private static final String EXTRA_ID = "EXTRA_ID";
 
@@ -74,6 +80,7 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
     private GoogleMap mMap;
     private GalleryAdapter mGalleryAdapter;
     private BuildingSite mBuildingSite;
+    private ActivityEasyCameraPicker mEasyCameraPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +102,34 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != mEasyCameraPicker) {
+            mEasyCameraPicker.onDestroy();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        getEasyCameraPicker().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getEasyCameraPicker().onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         addBuildingSiteMarker();
     }
 
     @OnClick(R.id.fab_add_picture)
-    void openCameraActivity(){
-        startActivity(CameraActivity.getStartIntent(this));
+    void openCamera() {
+        getEasyCameraPicker().openPicker(String.format(getString(R.string.photo_file_name), mBuildingSite.getName(), mGalleryAdapter.getItemCount()));
     }
 
     private void initDataSource(String buildingSiteId) {
@@ -155,5 +182,34 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
             mMap.addMarker(new MarkerOptions().position(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng())));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng() - 0.015)));
         }
+    }
+
+    private ActivityEasyCameraPicker getEasyCameraPicker() {
+        if (mEasyCameraPicker == null) {
+            mEasyCameraPicker = new ActivityEasyCameraPicker(
+                    this,
+                    getString(R.string.file_provider),
+                    false
+            );
+            mEasyCameraPicker.setOnResult(this);
+            mEasyCameraPicker.setCoordinatorLayout(ButterKnife.findById(BuildingSiteDetailActivity.this, R.id.coordinator));
+        }
+        return mEasyCameraPicker;
+    }
+
+    @Override
+    public void onSuccess(File file) {
+        StorageReference photoRef = mStorage.child(keyRef);
+        UploadTask uploadTask = photoRef.putFile(mPhotoUri);
+        uploadTask.addOnSuccessListener(task -> {
+            mPhotoRef = task.getDownloadUrl().toString();
+            uploadKeyData(keyRef, keyName, mPhotoRef, keychainId);
+        });
+        uploadTask.addOnFailureListener(e -> {
+            //At the end of the creation we allow again dialog cancellation
+            getDialog().setCancelable(true);
+
+            mEditName.setError(e.getMessage());
+        });
     }
 }

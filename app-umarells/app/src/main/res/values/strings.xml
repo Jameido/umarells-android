@@ -15,4 +15,7 @@
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="file_provider">com.spikes.umarells.fileprovider</string>
+    <string name="photo_file_name" formatted="false">%s_%d.jpg</string>
+
 </resources>
