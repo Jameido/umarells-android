@@ -23,72 +23,46 @@ import java.util.Map;
  */
 
 @IgnoreExtraProperties
-public class BuildingSite {
-    private static final String PROP_NAME = "name";
-    private static final String PROP_ADDRESS = "address";
-    private static final String PROP_LAT = "lat";
-    private static final String PROP_LNG = "lng";
-    private static final String PROP_START = "start";
-    private static final String PROP_END = "end";
+public class Comment {
+    private static final String PROP_AUTHOR_ID = "authorId";
+    private static final String PROP_AUTHOR_NAME = "authorName";
+    private static final String PROP_CONTENT = "content";
+    private static final String PROP_TIMESTAMP = "timestamp";
 
 
-    @PropertyName(PROP_NAME)
-    private String mName;
-    @PropertyName(PROP_LAT)
-    private Double mLat;
-    @PropertyName(PROP_LNG)
-    private Double mLng;
-    @PropertyName(PROP_ADDRESS)
-    private String mAddress;
-    @PropertyName(PROP_START)
-    private Long mStart;
-    @PropertyName(PROP_END)
-    private Long mEnd;
+    @PropertyName(PROP_AUTHOR_ID)
+    private String mAuthorId;
+    @PropertyName(PROP_AUTHOR_NAME)
+    private String mAuthorName;
+    @PropertyName(PROP_CONTENT)
+    private String mContent;
+    @PropertyName(PROP_TIMESTAMP)
+    private Long mTimestamp;
 
-    public BuildingSite() {
+    public Comment() {
     }
 
-    public BuildingSite(String name, Double lat, Double lng, String address, Long start, Long end) {
-        mName = name;
-        mLat = lat;
-        mLng = lng;
-        mAddress = address;
-        mStart = start;
-        mEnd = end;
+    public Comment(String authorId, String authorName, String content, Long timestamp) {
+        mAuthorId = authorId;
+        mAuthorName = authorName;
+        mContent = content;
+        mTimestamp = timestamp;
     }
 
-    public String getName() {
-        return mName;
+    public String getAuthorName() {
+        return mAuthorName;
     }
 
-    public Double getLat() {
-        return mLat;
-    }
-
-    public Double getLng() {
-        return mLng;
-    }
-
-    public Long getStart() {
-        return mStart;
-    }
-
-    public Long getEnd() {
-        return mEnd;
-    }
-
-    public String getAddress() {
-        return mAddress;
+    public String getContent() {
+        return mContent;
     }
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(PROP_NAME, mName);
-        map.put(PROP_LAT, mLat);
-        map.put(PROP_LNG, mLng);
-        map.put(PROP_ADDRESS, mAddress);
-        map.put(PROP_START, mStart);
-        map.put(PROP_END, mEnd);
+        map.put(PROP_AUTHOR_ID, mAuthorId);
+        map.put(PROP_AUTHOR_NAME, mAuthorName);
+        map.put(PROP_CONTENT, mContent);
+        map.put(PROP_TIMESTAMP, mTimestamp);
 
         return map;
     }

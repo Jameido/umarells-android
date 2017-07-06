@@ -22,7 +22,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_gallery"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="180dp"
                 android:orientation="horizontal"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 tools:listitem="@layout/list_item_gallery"/>
@@ -49,45 +49,13 @@
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.4"/>
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/text_building_site_name"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="New building"/>
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/text_building_site_start"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_date_range_black_24dp"
-                    app:layout_constraintEnd_toStartOf="@+id/text_building_site_end"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
-                    tools:text="12/12/2012"/>
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/text_building_site_end"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_date_range_black_24dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/text_building_site_start"
-                    app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
-                    tools:text="12/12/2014"/>
-
                 <fragment
                     android:id="@+id/map_building_site"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:cameraZoom="12"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_building_site_address"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_building_site_end"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/guideline"
                     app:layout_constraintTop_toTopOf="@+id/text_building_site_address"
@@ -98,7 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/gradient_hor_white"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_building_site_address"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_building_site_end"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/text_building_site_address"/>
@@ -108,24 +76,53 @@
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="200dp"
+                    android:minHeight="140dp"
                     android:text="@string/hint_building_site_location"
                     app:layout_constraintEnd_toStartOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_building_site_start"/>
-
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/text_building_site_description"
+                    android:id="@+id/text_building_site_start"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:drawableStart="@drawable/ic_date_range_black_24dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_building_site_address"
-                    tools:text="@string/ph_description"/>
+                    tools:text="12/12/2012"/>
 
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_building_site_end"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_date_range_black_24dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_building_site_start"
+                    tools:text="12/12/2014"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_comments"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    tools:listitem="@layout/list_item_comment"
+                    app:layout_constraintTop_toBottomOf="@+id/text_building_site_end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_see_comments"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_see_all_comments"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_comments"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
             </android.support.constraint.ConstraintLayout>
 
         </RelativeLayout>

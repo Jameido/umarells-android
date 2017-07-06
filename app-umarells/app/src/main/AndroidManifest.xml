@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider"
@@ -27,7 +26,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-
 
         <activity android:name=".features.splash.SplashActivity">
             <intent-filter>
@@ -53,6 +51,8 @@
             android:label="@string/title_activity_map">
         </activity>
         <activity android:name=".features.detail.BuildingSiteDetailActivity">
+        </activity>
+        <activity android:name=".features.comments.CommentsActivity">
         </activity>
     </application>
 

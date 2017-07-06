@@ -241,7 +241,6 @@ public class MapActivity extends AppCompatActivityExt
 
         BuildingSite buildingSite = new BuildingSite(
                 "Building Site" + mMarkers.size(),
-                getString(R.string.ph_description),
                 location.latitude,
                 location.longitude,
                 "Building Address" + mMarkers.size(),

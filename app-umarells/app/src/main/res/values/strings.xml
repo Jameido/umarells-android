@@ -8,14 +8,15 @@
     <string name="hint_building_site_location">Position</string>
     <string name="help_building_site_location">Move the pin on the map to choose the building sites\'s position.</string>
     <string name="user_marker_title">Your Position</string>
+    <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
+    <string name="action_see_all_comments">See all comments</string>
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
-    <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
 
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="file_provider">com.spikes.umarells.fileprovider</string>
-    <string name="photo_file_name" formatted="false">%s_%d.jpg</string>
+    <string name="file_provider" translatable="false">com.spikes.umarells.fileprovider</string>
+    <string name="photo_file_name" formatted="false" translatable="false">%s_%d.jpg</string>
 
 </resources>

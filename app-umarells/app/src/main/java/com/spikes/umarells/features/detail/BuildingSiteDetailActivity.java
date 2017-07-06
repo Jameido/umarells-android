@@ -21,7 +21,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,12 +33,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.spikes.easyphotopicker.ActivityEasyCameraPicker;
 import com.spikes.umarells.R;
+import com.spikes.umarells.features.comments.CommentsActivity;
+import com.spikes.umarells.features.comments.TopCommentsAdapter;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 
@@ -69,21 +71,20 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         return startIntent;
     }
 
-    @BindView(R.id.text_building_site_name)
-    AppCompatTextView mTextName;
     @BindView(R.id.text_building_site_start)
     AppCompatTextView mTextStart;
     @BindView(R.id.text_building_site_end)
     AppCompatTextView mTextEnd;
     @BindView(R.id.text_building_site_address)
     AppCompatTextView mTextAddress;
-    @BindView(R.id.text_building_site_description)
-    AppCompatTextView mTextDescription;
     @BindView(R.id.recycler_gallery)
     RecyclerView mRecyclerGallery;
+    @BindView(R.id.recycler_comments)
+    RecyclerView mRecyclerComments;
 
     private GoogleMap mMap;
     private GalleryAdapter mGalleryAdapter;
+    private TopCommentsAdapter mCommentsAdapter;
     private String mBuildingSiteId;
     private BuildingSite mBuildingSite;
     private ActivityEasyCameraPicker mEasyCameraPicker;
@@ -104,6 +105,19 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map_building_site);
             mapFragment.getMapAsync(this);
+
+            final LinearLayoutManager galleryLayoutManager =
+                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
+            galleryLayoutManager.setStackFromEnd(true);
+            mRecyclerGallery.setLayoutManager(galleryLayoutManager);
+            mRecyclerGallery.setHasFixedSize(true);
+            PagerSnapHelper snapHelper = new PagerSnapHelper();
+            snapHelper.attachToRecyclerView(mRecyclerGallery);
+
+            final LinearLayoutManager commentsLayoutManager =
+                    new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            mRecyclerGallery.setLayoutManager(commentsLayoutManager);
+
         } else {
             finish();
         }
@@ -144,6 +158,11 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         }
     }
 
+    @OnClick(R.id.text_see_comments)
+    void seeAllComments(){
+        startActivity(CommentsActivity.getStartIntent(this, mBuildingSiteId));
+    }
+
     private void initDataSource(String buildingSiteId) {
         mBuildingSiteId = buildingSiteId;
 
@@ -178,24 +197,24 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
                 .child(buildingSiteId);
 
         mGalleryAdapter = new GalleryAdapter(mPhotosReference);
-        final LinearLayoutManager manager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
-        manager.setStackFromEnd(true);
-        mRecyclerGallery.setLayoutManager(manager);
-        mRecyclerGallery.setHasFixedSize(true);
         mRecyclerGallery.setAdapter(mGalleryAdapter);
 
-        PagerSnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerGallery);
+        Query commentsQuery = FirebaseDatabase
+                .getInstance()
+                .getReference()
+                .child("building_comments")
+                .child(buildingSiteId);
+
+        mCommentsAdapter = new TopCommentsAdapter(commentsQuery);
+        mRecyclerComments.setAdapter(mCommentsAdapter);
     }
 
     private void fillBuildingSiteData() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        mTextName.setText(mBuildingSite.getName());
+        getSupportActionBar().setTitle(mBuildingSite.getName());
         mTextStart.setText(dateFormat.format(new Date(mBuildingSite.getStart())));
         mTextEnd.setText(dateFormat.format(mBuildingSite.getEnd()));
         mTextAddress.setText(mBuildingSite.getAddress());
-        mTextDescription.setText(mBuildingSite.getDescription());
     }
 
 
