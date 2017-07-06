@@ -113,11 +113,6 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
             mRecyclerGallery.setHasFixedSize(true);
             PagerSnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(mRecyclerGallery);
-
-            final LinearLayoutManager commentsLayoutManager =
-                    new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            mRecyclerGallery.setLayoutManager(commentsLayoutManager);
-
         } else {
             finish();
         }

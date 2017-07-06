@@ -38,7 +38,7 @@ public class TopCommentsAdapter extends FirebaseRecyclerAdapter<Comment, TopComm
     protected void populateViewHolder(CommentViewHolder viewHolder, Comment model, int position) {
         //We show only the first comment as full (aka the description)
         if(position == 0){
-            viewHolder.mTextContent.setMaxLines(Integer.MAX_VALUE);
+            viewHolder.mTextContent.setMaxLines(4);
         }else {
             viewHolder.mTextContent.setMaxLines(2);
         }
