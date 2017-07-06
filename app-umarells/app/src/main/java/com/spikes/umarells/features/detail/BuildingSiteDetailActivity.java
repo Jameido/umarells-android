@@ -14,6 +14,7 @@ package com.spikes.umarells.features.detail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
@@ -21,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,9 +32,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.spikes.easyphotopicker.ActivityEasyCameraPicker;
@@ -44,7 +47,9 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,8 +84,11 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
     private GoogleMap mMap;
     private GalleryAdapter mGalleryAdapter;
+    private String mBuildingSiteId;
     private BuildingSite mBuildingSite;
     private ActivityEasyCameraPicker mEasyCameraPicker;
+    private StorageReference mStorage;
+    private DatabaseReference mPhotosReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +137,21 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
     @OnClick(R.id.fab_add_picture)
     void openCamera() {
-        getEasyCameraPicker().openPicker(String.format(getString(R.string.photo_file_name), mBuildingSite.getName(), mGalleryAdapter.getItemCount()));
+        if(null != getUser()) {
+            getEasyCameraPicker().openPicker(String.format(getString(R.string.photo_file_name), mBuildingSite.getName(), mGalleryAdapter.getItemCount()));
+        }else {
+            startAuthentication();
+        }
     }
 
     private void initDataSource(String buildingSiteId) {
+        mBuildingSiteId = buildingSiteId;
+
+        mStorage = FirebaseStorage.getInstance()
+                .getReference()
+                .child("building_sites_photos")
+                .child(buildingSiteId);
+
         FirebaseDatabase
                 .getInstance()
                 .getReference()
@@ -152,19 +171,22 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
                     }
                 });
 
-        Query imagesQuery = FirebaseDatabase
+        mPhotosReference = FirebaseDatabase
                 .getInstance()
                 .getReference()
-                .child("building_images")
+                .child("building_photos")
                 .child(buildingSiteId);
 
-        mGalleryAdapter = new GalleryAdapter(imagesQuery);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerGallery.setLayoutManager(mLayoutManager);
+        mGalleryAdapter = new GalleryAdapter(mPhotosReference);
+        final LinearLayoutManager manager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
+        manager.setStackFromEnd(true);
+        mRecyclerGallery.setLayoutManager(manager);
+        mRecyclerGallery.setHasFixedSize(true);
         mRecyclerGallery.setAdapter(mGalleryAdapter);
 
-        SnapHelper pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(mRecyclerGallery);
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerGallery);
     }
 
     private void fillBuildingSiteData() {
@@ -189,7 +211,7 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
             mEasyCameraPicker = new ActivityEasyCameraPicker(
                     this,
                     getString(R.string.file_provider),
-                    false
+                    true
             );
             mEasyCameraPicker.setOnResult(this);
             mEasyCameraPicker.setCoordinatorLayout(ButterKnife.findById(BuildingSiteDetailActivity.this, R.id.coordinator));
@@ -199,17 +221,32 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
     @Override
     public void onSuccess(File file) {
-        StorageReference photoRef = mStorage.child(keyRef);
-        UploadTask uploadTask = photoRef.putFile(mPhotoUri);
+        StorageReference photoRef = mStorage.child(mBuildingSiteId).child(file.getName());
+        UploadTask uploadTask = photoRef.putFile(Uri.fromFile(file));
         uploadTask.addOnSuccessListener(task -> {
-            mPhotoRef = task.getDownloadUrl().toString();
-            uploadKeyData(keyRef, keyName, mPhotoRef, keychainId);
+            uploadPhotoUrl(task.getDownloadUrl().toString());
         });
         uploadTask.addOnFailureListener(e -> {
-            //At the end of the creation we allow again dialog cancellation
-            getDialog().setCancelable(true);
-
-            mEditName.setError(e.getMessage());
+            //TODO manage error
         });
+    }
+
+    //TODO: move code to firebase cloud functions
+    private void uploadPhotoUrl(String photoUrl) {
+        String imageKey = mPhotosReference.push().getKey();
+
+        Map<String, Object> photoUpdate = new HashMap<>();
+        photoUpdate.put(imageKey, photoUrl);
+
+        mPhotosReference.updateChildren(
+                photoUpdate,
+                (databaseError, databaseReference) -> {
+                    if (null != databaseError) {
+                        Log.e("Error", "Updating data", databaseError.toException());
+                    } else {
+                        //TODO
+                    }
+                }
+        );
     }
 }
