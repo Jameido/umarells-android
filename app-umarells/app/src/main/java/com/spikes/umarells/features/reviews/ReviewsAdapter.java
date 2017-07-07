@@ -10,7 +10,7 @@
  *
  */
 
-package com.spikes.umarells.features.comments;
+package com.spikes.umarells.features.reviews;
 
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +19,7 @@ import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
 import com.spikes.umarells.R;
-import com.spikes.umarells.models.Comment;
+import com.spikes.umarells.models.Review;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,22 +28,22 @@ import butterknife.ButterKnife;
  * Created by Luca Rossi on 05/07/2017.
  */
 
-public class CommentsAdapter extends FirebaseRecyclerAdapter<Comment, CommentsAdapter.CommentViewHolder> {
+public class ReviewsAdapter extends FirebaseRecyclerAdapter<Review, ReviewsAdapter.CommentViewHolder> {
 
-    public CommentsAdapter(Query query) {
-        super(Comment.class, R.layout.list_item_comment, CommentViewHolder.class, query);
+    public ReviewsAdapter(Query query) {
+        super(Review.class, R.layout.list_item_review, CommentViewHolder.class, query);
     }
 
     @Override
-    protected void populateViewHolder(CommentViewHolder viewHolder, Comment model, int position) {
+    protected void populateViewHolder(CommentViewHolder viewHolder, Review model, int position) {
         viewHolder.mTextAuthor.setText(model.getAuthorName());
         viewHolder.mTextContent.setText(model.getContent());
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_comment_author)
+        @BindView(R.id.text_review_author)
         AppCompatTextView mTextAuthor;
-        @BindView(R.id.text_comment_content)
+        @BindView(R.id.text_review_content)
         AppCompatTextView mTextContent;
 
         public CommentViewHolder(View itemView) {

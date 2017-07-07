@@ -10,101 +10,69 @@
  *
  */
 
-package com.spikes.umarells.features.detail;
+package com.spikes.umarells.features.gallery;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.spikes.easyphotopicker.ActivityEasyCameraPicker;
 import com.spikes.umarells.R;
-import com.spikes.umarells.features.comments.CommentsActivity;
-import com.spikes.umarells.features.comments.TopCommentsAdapter;
-import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BuildingSiteDetailActivity extends AppCompatActivityExt
-        implements OnMapReadyCallback,
-        ActivityEasyCameraPicker.OnResult {
+public class GalleryActivity extends AppCompatActivityExt
+        implements ActivityEasyCameraPicker.OnResult {
 
     private static final String EXTRA_ID = "EXTRA_ID";
+    private static final String EXTRA_NAME = "EXTRA_NAME";
+    private static final String TAG = GalleryActivity.class.getSimpleName();
 
-    private static final String TAG = BuildingSiteDetailActivity.class.getSimpleName();
-
-    public static Intent getStartIntent(Context context, String buildingSiteId) {
-        Intent startIntent = new Intent(context, BuildingSiteDetailActivity.class);
-        startIntent.putExtra(EXTRA_ID, buildingSiteId);
-        return startIntent;
-    }
-
-    @BindView(R.id.text_building_site_start)
-    AppCompatTextView mTextStart;
-    @BindView(R.id.text_building_site_end)
-    AppCompatTextView mTextEnd;
-    @BindView(R.id.text_building_site_address)
-    AppCompatTextView mTextAddress;
-    @BindView(R.id.recycler_gallery)
-    RecyclerView mRecyclerGallery;
-    @BindView(R.id.recycler_comments)
-    RecyclerView mRecyclerComments;
-
-    private GoogleMap mMap;
     private GalleryAdapter mGalleryAdapter;
-    private TopCommentsAdapter mCommentsAdapter;
-    private String mBuildingSiteId;
-    private BuildingSite mBuildingSite;
     private ActivityEasyCameraPicker mEasyCameraPicker;
     private StorageReference mStorage;
+    private String mBuildingSiteId;
+    private String mBuildingSiteName;
     private DatabaseReference mPhotosReference;
+
+    @BindView(R.id.recycler_gallery)
+    RecyclerView mRecyclerGallery;
+
+    public static Intent getStartIntent(Context context, String buildingSiteId, String buildingSiteName) {
+        Intent startIntent = new Intent(context, GalleryActivity.class);
+        startIntent.putExtra(EXTRA_ID, buildingSiteId);
+        startIntent.putExtra(EXTRA_NAME, buildingSiteName);
+        return startIntent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_building_site_detail);
-
+        setContentView(R.layout.activity_gallery);
         Bundle extras = getIntent().getExtras();
         if (null != extras && extras.containsKey(EXTRA_ID)) {
 
             initDataSource(extras.getString(EXTRA_ID, ""));
 
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map_building_site);
-            mapFragment.getMapAsync(this);
+            mBuildingSiteName = extras.getString(EXTRA_NAME, "");
 
             final LinearLayoutManager galleryLayoutManager =
                     new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
@@ -138,24 +106,14 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        addBuildingSiteMarker();
-    }
-
     @OnClick(R.id.fab_add_picture)
-    void openCamera() {
-        if(null != getUser()) {
-            getEasyCameraPicker().openPicker(String.format(getString(R.string.photo_file_name), mBuildingSite.getName(), mGalleryAdapter.getItemCount()));
-        }else {
+    void addComment() {
+        if (null != getUser()) {
+            getEasyCameraPicker().openPicker(String.format(getString(R.string.photo_file_name), mBuildingSiteName, mGalleryAdapter.getItemCount()));
+        } else {
             startAuthentication();
         }
-    }
 
-    @OnClick(R.id.text_see_comments)
-    void seeAllComments(){
-        startActivity(CommentsActivity.getStartIntent(this, mBuildingSiteId));
     }
 
     private void initDataSource(String buildingSiteId) {
@@ -166,25 +124,6 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
                 .child("building_sites_photos")
                 .child(buildingSiteId);
 
-        FirebaseDatabase
-                .getInstance()
-                .getReference()
-                .child("building_sites")
-                .child(buildingSiteId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mBuildingSite = dataSnapshot.getValue(BuildingSite.class);
-                        addBuildingSiteMarker();
-                        fillBuildingSiteData();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
         mPhotosReference = FirebaseDatabase
                 .getInstance()
                 .getReference()
@@ -193,31 +132,6 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
 
         mGalleryAdapter = new GalleryAdapter(mPhotosReference);
         mRecyclerGallery.setAdapter(mGalleryAdapter);
-
-        Query commentsQuery = FirebaseDatabase
-                .getInstance()
-                .getReference()
-                .child("building_comments")
-                .child(buildingSiteId);
-
-        mCommentsAdapter = new TopCommentsAdapter(commentsQuery);
-        mRecyclerComments.setAdapter(mCommentsAdapter);
-    }
-
-    private void fillBuildingSiteData() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        getSupportActionBar().setTitle(mBuildingSite.getName());
-        mTextStart.setText(dateFormat.format(new Date(mBuildingSite.getStart())));
-        mTextEnd.setText(dateFormat.format(mBuildingSite.getEnd()));
-        mTextAddress.setText(mBuildingSite.getAddress());
-    }
-
-
-    private void addBuildingSiteMarker() {
-        if (null != mMap && null != mBuildingSite) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng())));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mBuildingSite.getLat(), mBuildingSite.getLng() - 0.015)));
-        }
     }
 
     private ActivityEasyCameraPicker getEasyCameraPicker() {
@@ -228,7 +142,7 @@ public class BuildingSiteDetailActivity extends AppCompatActivityExt
                     true
             );
             mEasyCameraPicker.setOnResult(this);
-            mEasyCameraPicker.setCoordinatorLayout(ButterKnife.findById(BuildingSiteDetailActivity.this, R.id.coordinator));
+            mEasyCameraPicker.setCoordinatorLayout(ButterKnife.findById(GalleryActivity.this, R.id.coordinator));
         }
         return mEasyCameraPicker;
     }

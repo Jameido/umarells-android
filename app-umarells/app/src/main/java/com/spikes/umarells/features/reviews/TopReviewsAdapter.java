@@ -10,44 +10,51 @@
  *
  */
 
-package com.spikes.umarells.features.detail;
+package com.spikes.umarells.features.reviews;
 
-import android.net.Uri;
-import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
 import com.spikes.umarells.R;
+import com.spikes.umarells.models.Review;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Luca Rossi on 05/07/2017.
  */
 
-public class GalleryAdapter extends FirebaseRecyclerAdapter<String, GalleryAdapter.ImageViewHolder> {
+public class TopReviewsAdapter extends FirebaseRecyclerAdapter<Review, TopReviewsAdapter.ReviewViewHolder> {
 
-    public GalleryAdapter(Query query) {
-        super(String.class, R.layout.list_item_gallery, ImageViewHolder.class, query);
+    public TopReviewsAdapter(Query query) {
+        super(Review.class, R.layout.list_item_review, ReviewViewHolder.class, query);
     }
 
     @Override
-    protected void populateViewHolder(ImageViewHolder viewHolder, String model, int position) {
-        Glide.with(viewHolder.itemView.getContext())
-                .load(model)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .fitCenter()
-                .thumbnail(0.4f)
-                .dontAnimate()
-                .into((AppCompatImageView)viewHolder.itemView);
+    protected void populateViewHolder(ReviewViewHolder viewHolder, Review model, int position) {
+        //We show only the first comment as full (aka the description)
+        if(position == 0){
+            viewHolder.mTextContent.setMaxLines(4);
+        }else {
+            viewHolder.mTextContent.setMaxLines(2);
+        }
+        viewHolder.mTextAuthor.setText(model.getAuthorName());
+        viewHolder.mTextContent.setText(model.getContent());
     }
 
-    public static class ImageViewHolder extends RecyclerView.ViewHolder {
+    public static class ReviewViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_review_author)
+        AppCompatTextView mTextAuthor;
+        @BindView(R.id.text_review_content)
+        AppCompatTextView mTextContent;
 
-        public ImageViewHolder(View itemView) {
+        public ReviewViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

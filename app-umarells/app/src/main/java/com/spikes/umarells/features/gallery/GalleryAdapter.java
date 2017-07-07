@@ -10,56 +10,43 @@
  *
  */
 
-package com.spikes.umarells.features.comments;
+package com.spikes.umarells.features.gallery;
 
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
 import com.spikes.umarells.R;
-import com.spikes.umarells.models.Comment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Luca Rossi on 05/07/2017.
  */
 
-public class TopCommentsAdapter extends FirebaseRecyclerAdapter<Comment, TopCommentsAdapter.CommentViewHolder> {
+public class GalleryAdapter extends FirebaseRecyclerAdapter<String, GalleryAdapter.ImageViewHolder> {
 
-    public TopCommentsAdapter(Query query) {
-        super(Comment.class, R.layout.list_item_comment, CommentViewHolder.class, query);
+    public GalleryAdapter(Query query) {
+        super(String.class, R.layout.list_item_gallery, ImageViewHolder.class, query);
     }
 
     @Override
-    protected void populateViewHolder(CommentViewHolder viewHolder, Comment model, int position) {
-        //We show only the first comment as full (aka the description)
-        if(position == 0){
-            viewHolder.mTextContent.setMaxLines(4);
-        }else {
-            viewHolder.mTextContent.setMaxLines(2);
-        }
-        viewHolder.mTextAuthor.setText(model.getAuthorName());
-        viewHolder.mTextContent.setText(model.getContent());
+    protected void populateViewHolder(ImageViewHolder viewHolder, String model, int position) {
+        Glide.with(viewHolder.itemView.getContext())
+                .load(model)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .fitCenter()
+                .thumbnail(0.4f)
+                .dontAnimate()
+                .into((AppCompatImageView)viewHolder.itemView);
     }
 
-    @Override
-    public int getItemCount() {
-        return super.getItemCount() > 3 ? 3 : super.getItemCount();
-    }
+    public static class ImageViewHolder extends RecyclerView.ViewHolder {
 
-    public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_comment_author)
-        AppCompatTextView mTextAuthor;
-        @BindView(R.id.text_comment_content)
-        AppCompatTextView mTextContent;
-
-        public CommentViewHolder(View itemView) {
+        public ImageViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

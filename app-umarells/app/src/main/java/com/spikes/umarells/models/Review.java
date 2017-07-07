@@ -23,10 +23,12 @@ import java.util.Map;
  */
 
 @IgnoreExtraProperties
-public class Comment {
+public class Review {
     private static final String PROP_AUTHOR_ID = "authorId";
     private static final String PROP_AUTHOR_NAME = "authorName";
+    private static final String PROP_TITLE = "title";
     private static final String PROP_CONTENT = "content";
+    private static final String PROP_RATING = "rating";
     private static final String PROP_TIMESTAMP = "timestamp";
 
 
@@ -34,18 +36,24 @@ public class Comment {
     private String mAuthorId;
     @PropertyName(PROP_AUTHOR_NAME)
     private String mAuthorName;
+    @PropertyName(PROP_TITLE)
+    private String mTitle;
     @PropertyName(PROP_CONTENT)
     private String mContent;
+    @PropertyName(PROP_RATING)
+    private Integer mRating;
     @PropertyName(PROP_TIMESTAMP)
     private Long mTimestamp;
 
-    public Comment() {
+    public Review() {
     }
 
-    public Comment(String authorId, String authorName, String content, Long timestamp) {
+    public Review(String authorId, String authorName, String title, String content, Integer rating, Long timestamp) {
         mAuthorId = authorId;
         mAuthorName = authorName;
+        mTitle = title;
         mContent = content;
+        mRating = rating;
         mTimestamp = timestamp;
     }
 
@@ -61,7 +69,9 @@ public class Comment {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(PROP_AUTHOR_ID, mAuthorId);
         map.put(PROP_AUTHOR_NAME, mAuthorName);
+        map.put(PROP_TITLE, mTitle);
         map.put(PROP_CONTENT, mContent);
+        map.put(PROP_RATING, mRating);
         map.put(PROP_TIMESTAMP, mTimestamp);
 
         return map;

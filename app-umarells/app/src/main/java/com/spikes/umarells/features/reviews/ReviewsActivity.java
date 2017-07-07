@@ -10,39 +10,38 @@
  *
  */
 
-package com.spikes.umarells.features.comments;
+package com.spikes.umarells.features.reviews;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.spikes.umarells.R;
-import com.spikes.umarells.features.detail.BuildingSiteDetailActivity;
-import com.spikes.umarells.models.Comment;
+import com.spikes.umarells.models.Review;
 import com.spikes.umarells.shared.AppCompatActivityExt;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class CommentsActivity extends AppCompatActivityExt {
+public class ReviewsActivity extends AppCompatActivityExt {
 
     private static final String EXTRA_ID = "EXTRA_ID";
-    private static final String TAG = CommentsActivity.class.getSimpleName();
+    private static final String TAG = ReviewsActivity.class.getSimpleName();
 
-    private CommentsAdapter mCommentsAdapter;
-    private DatabaseReference mCommentsReference;
+    private ReviewsAdapter mReviewsAdapter;
+    private DatabaseReference mReviewsReference;
     private String mBuildingSiteId;
 
-    @BindView(R.id.recycler_comments)
-    RecyclerView mRecyclerComments;
+    @BindView(R.id.recycler_reviews)
+    RecyclerView mRecyclerReviews;
 
     public static Intent getStartIntent(Context context, String buildingSiteId) {
-        Intent startIntent = new Intent(context, CommentsActivity.class);
+        Intent startIntent = new Intent(context, ReviewsActivity.class);
         startIntent.putExtra(EXTRA_ID, buildingSiteId);
         return startIntent;
     }
@@ -50,7 +49,7 @@ public class CommentsActivity extends AppCompatActivityExt {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comments);
+        setContentView(R.layout.activity_reviews);
         Bundle extras = getIntent().getExtras();
         if (null != extras && extras.containsKey(EXTRA_ID)) {
 
@@ -58,14 +57,14 @@ public class CommentsActivity extends AppCompatActivityExt {
         }
     }
 
-    @OnClick(R.id.fab_add_comment)
-    void addComment(){
-        if(null == getUser()){
+    @OnClick(R.id.fab_add_review)
+    void addReview() {
+        if (null == getUser()) {
             startAuthentication();
-        }else {
-            mCommentsReference.push()
+        } else {
+            mReviewsReference.push()
                     .setValue(
-                            getDummyComment().toMap(),
+                            getDummyReview().toMap(),
                             (databaseError, databaseReference) -> {
                                 if (null != databaseError) {
                                     //TODO show error
@@ -79,24 +78,57 @@ public class CommentsActivity extends AppCompatActivityExt {
     private void initDataSource(String buildingSiteId) {
         mBuildingSiteId = buildingSiteId;
 
-        mCommentsReference = FirebaseDatabase
+        mReviewsReference = FirebaseDatabase
                 .getInstance()
                 .getReference()
-                .child("building_comments")
+                .child("building_reviews")
                 .child(buildingSiteId);
 
-        mCommentsAdapter = new CommentsAdapter(mCommentsReference);
-        mRecyclerComments.setAdapter(mCommentsAdapter);
+        mReviewsAdapter = new ReviewsAdapter(mReviewsReference);
+        mRecyclerReviews.setAdapter(mReviewsAdapter);
     }
 
-    private Comment getDummyComment() {
-        return new Comment(
+    private Review getDummyReview() {
+        Random rnd = new Random();
+        return new Review(
                 getUser().getUid(),
                 getUser().getDisplayName(),
-                getString(R.string.ph_description),
-                System.currentTimeMillis()/1000
+                getRandomReviewTitle(rnd),
+                getRandomReviewContent(rnd),
+                rnd.nextInt(5),
+                System.currentTimeMillis() / 1000
         );
+    }
 
+    private String getRandomReviewTitle(Random rnd) {
+        switch (rnd.nextInt(5)) {
+            case 0:
+                return "Tee, non si fa mica così";
+            case 1:
+                return "Eeeh, ai miei tempi.";
+            case 2:
+                return "Una volta qui erano tutti campi";
+            case 3:
+                return "Non si fa mica così quel lavoro li";
+            case 4:
+                return "Ma che lavoro fatto male!";
+            default:
+                return "Ehhh, ai miei tempi queste cose non si facevano così";
+        }
+    }
 
+    private String getRandomReviewContent(Random rnd) {
+        switch (rnd.nextInt(3)) {
+            case 0:
+                return "Ma guarda tu se se si può fare una roba del genere... Mah";
+            case 1:
+                return "Tutto coperto, non si può neanche guardare dentro, che shifo";
+            case 2:
+                return "Ehhh, ai miei tempi sì che sapevamo lavorare come Dio comanda!";
+            case 3:
+                return "Cosa mi guardi, drogato? Ah che io lo so... delinquente...";
+            default:
+                return "";
+        }
     }
 }

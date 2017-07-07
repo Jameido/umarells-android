@@ -50,9 +50,11 @@
             android:name=".features.map.MapActivity"
             android:label="@string/title_activity_map">
         </activity>
-        <activity android:name=".features.detail.BuildingSiteDetailActivity">
+        <activity android:name=".features.detail.DetailActivity">
         </activity>
-        <activity android:name=".features.comments.CommentsActivity">
+        <activity android:name=".features.reviews.ReviewsActivity">
+        </activity>
+        <activity android:name=".features.gallery.GalleryActivity">
         </activity>
     </application>
 

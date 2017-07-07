@@ -37,7 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.spikes.easylocationmanager.ActivityEasyLocationManager;
 import com.spikes.easylocationmanager.EasyLocationManager;
 import com.spikes.umarells.R;
-import com.spikes.umarells.features.detail.BuildingSiteDetailActivity;
+import com.spikes.umarells.features.detail.DetailActivity;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 import com.spikes.umarells.shared.Constants;
@@ -148,7 +148,7 @@ public class MapActivity extends AppCompatActivityExt
             startAuthentication();
         }
         //TODO open form activity
-        //startActivityForResult(BuildingSiteDetailActivity.getStartIntentNew(this), RC_ADD_BUILDING_SITE);
+        //startActivityForResult(DetailActivity.getStartIntentNew(this), RC_ADD_BUILDING_SITE);
     }
 
     private void initDataSource() {
@@ -272,6 +272,6 @@ public class MapActivity extends AppCompatActivityExt
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        startActivity(BuildingSiteDetailActivity.getStartIntent(MapActivity.this, String.valueOf(marker.getTag())));
+        startActivity(DetailActivity.getStartIntent(MapActivity.this, String.valueOf(marker.getTag())));
     }
 }
