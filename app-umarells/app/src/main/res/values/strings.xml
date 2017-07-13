@@ -3,15 +3,17 @@
     <string name="title_activity_map">Map</string>
 
 
-    <!-- BUILDING SITE DETAIL-->
-    <string name="hint_building_site_name">Name…</string>
-    <string name="hint_building_site_location">Position</string>
+    <!-- BUILDING SITE DETAIL -->
     <string name="help_building_site_location">Move the pin on the map to choose the building sites\'s position.</string>
     <string name="user_marker_title">Your Position</string>
     <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
-    <string name="action_see_all_reviews">See all reviews</string>
-    <string name="action_save">Save</string>
-    <string name="action_edit">Edit</string>
+
+    <!-- CREATE -->
+    <string name="hint_building_site_name">Name</string>
+    <string name="hint_building_site_category">Category</string>
+    <string name="hint_building_site_description">Description</string>
+    <string name="hint_building_site_location">Position</string>
+    <string name="hint_building_site_dates">Dates</string>
 
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
     <string name="title_activity_maps">Map</string>
@@ -19,4 +21,8 @@
     <string name="file_provider" translatable="false">com.spikes.umarells.fileprovider</string>
     <string name="photo_file_name" formatted="false" translatable="false">%s_%d.jpg</string>
 
+    <!-- ACTIONS -->
+    <string name="action_see_all_reviews">See all reviews</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
 </resources>

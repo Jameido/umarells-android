@@ -10,45 +10,37 @@
  *
  */
 
-package com.spikes.umarells.features.reviews;
+package com.spikes.umarells.features.create;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.Query;
 import com.spikes.umarells.R;
-import com.spikes.umarells.models.Review;
+import com.spikes.umarells.shared.AppCompatActivityExt;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-/**
- * Created by Luca Rossi on 05/07/2017.
- */
+public class CreateActivity extends AppCompatActivityExt {
 
-public class ReviewsAdapter extends FirebaseRecyclerAdapter<Review, ReviewsAdapter.CommentViewHolder> {
-
-    public ReviewsAdapter(Query query) {
-        super(Review.class, R.layout.list_item_review, CommentViewHolder.class, query);
+    public static Intent getStartIntent(Context context){
+        Intent startIntent = new Intent(context, CreateActivity.class);
+        return startIntent;
     }
+
+    @BindView(R.id.edit_name)
+    TextInputEditText mEditName;
+    @BindView(R.id.edit_description)
+    TextInputEditText mEditDescription;
+    @BindView(R.id.edit_name)
+    AppCompatTextView mTextDates;
 
     @Override
-    protected void populateViewHolder(CommentViewHolder viewHolder, Review model, int position) {
-        viewHolder.mTextAuthor.setText(model.getAuthorName());
-        viewHolder.mTextContent.setText(model.getContent());
-    }
-
-    public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_author)
-        AppCompatTextView mTextAuthor;
-        @BindView(R.id.text_content)
-        AppCompatTextView mTextContent;
-
-        public CommentViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create);
     }
 }

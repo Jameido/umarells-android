@@ -18,13 +18,13 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_review_author"
+        android:id="@+id/text_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"/>
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_review_content"
+        android:id="@+id/text_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </android.support.v7.widget.LinearLayoutCompat>

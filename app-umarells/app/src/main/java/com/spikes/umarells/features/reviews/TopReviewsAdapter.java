@@ -47,9 +47,9 @@ public class TopReviewsAdapter extends FirebaseRecyclerAdapter<Review, TopReview
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_review_author)
+        @BindView(R.id.text_author)
         AppCompatTextView mTextAuthor;
-        @BindView(R.id.text_review_content)
+        @BindView(R.id.text_content)
         AppCompatTextView mTextContent;
 
         public ReviewViewHolder(View itemView) {

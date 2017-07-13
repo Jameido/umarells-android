@@ -59,11 +59,11 @@ public class DetailActivity extends AppCompatActivityExt
         return startIntent;
     }
 
-    @BindView(R.id.text_building_site_start)
+    @BindView(R.id.text_start)
     AppCompatTextView mTextStart;
-    @BindView(R.id.text_building_site_end)
+    @BindView(R.id.text_end)
     AppCompatTextView mTextEnd;
-    @BindView(R.id.text_building_site_address)
+    @BindView(R.id.text_address)
     AppCompatTextView mTextAddress;
     @BindView(R.id.image_detail)
     AppCompatImageView mImageDetail;

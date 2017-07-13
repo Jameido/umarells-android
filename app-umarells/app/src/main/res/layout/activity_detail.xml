@@ -20,6 +20,7 @@
                 android:id="@+id/image_detail"
                 android:layout_width="0dp"
                 android:layout_height="180dp"
+                android:adjustViewBounds="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +28,7 @@
 
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_building_site_name"
+                android:id="@+id/text_name"
                 style="@style/TextAppearance.AppCompat.Large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -37,21 +38,21 @@
                 tools:text="New building"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_building_site_start"
+                android:id="@+id/text_start"
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_5"
                 android:layout_marginStart="@dimen/spacing_5"
                 android:drawableStart="@drawable/ic_date_range_black_24dp"
-                app:layout_constraintEnd_toStartOf="@+id/text_building_site_end"
+                app:layout_constraintEnd_toStartOf="@+id/text_end"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
+                app:layout_constraintTop_toBottomOf="@+id/text_name"
                 tools:text="12/12/2012"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_building_site_end"
+                android:id="@+id/text_end"
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,8 +60,8 @@
                 android:layout_marginStart="@dimen/spacing_5"
                 android:drawableStart="@drawable/ic_date_range_black_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/text_building_site_start"
-                app:layout_constraintTop_toBottomOf="@+id/text_building_site_name"
+                app:layout_constraintStart_toEndOf="@+id/text_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_name"
                 tools:text="12/12/2014"/>
 
 
@@ -79,7 +80,7 @@
                 app:cameraZoom="12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/guideline"
-                app:layout_constraintTop_toBottomOf="@+id/text_building_site_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_start"
                 app:liteMode="true"
                 app:mapType="normal"/>
 
@@ -93,7 +94,7 @@
                 app:layout_constraintTop_toTopOf="@+id/map_building_site"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_building_site_address"
+                android:id="@+id/text_address"
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
