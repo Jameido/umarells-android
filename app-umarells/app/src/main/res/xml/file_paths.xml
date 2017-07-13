@@ -13,5 +13,4 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path name="profile_pics" path="Android/data/com.spikes.umarells/files/Pictures" />
     <external-path name="cache" path="Android/data/com.spikes.umarells/cache" />
-    <!--<external-path name="my_images" path="Android/data/user/0/it.wedigital.tamdriver/files />-->
 </paths>

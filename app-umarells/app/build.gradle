@@ -29,6 +29,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':easy-location-manager')
     compile project(':easy-photo-picker')
+    compile project(path: ':joda-time-utils')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

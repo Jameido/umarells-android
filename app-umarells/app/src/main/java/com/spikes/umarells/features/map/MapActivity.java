@@ -37,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.spikes.easylocationmanager.ActivityEasyLocationManager;
 import com.spikes.easylocationmanager.EasyLocationManager;
 import com.spikes.umarells.R;
+import com.spikes.umarells.features.create.CreateActivity;
 import com.spikes.umarells.features.detail.DetailActivity;
 import com.spikes.umarells.models.BuildingSite;
 import com.spikes.umarells.shared.AppCompatActivityExt;
@@ -140,10 +141,16 @@ public class MapActivity extends AppCompatActivityExt
         }
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        startActivity(DetailActivity.getStartIntent(MapActivity.this, String.valueOf(marker.getTag())));
+    }
+
     @OnClick(R.id.fab_add_building_site)
     void addNewBuildingSite() {
         if (null != getUser()) {
-            addDummyBuildingSite();
+            startActivity(CreateActivity.getStartIntent(MapActivity.this));
+            //addDummyBuildingSite();
         } else {
             startAuthentication();
         }
@@ -268,10 +275,5 @@ public class MapActivity extends AppCompatActivityExt
         long end = Timestamp.valueOf("2020-12-31 23:59:59").getTime();
         long diff = end - start + 1;
         return start + (long) (Math.random() * diff);
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        startActivity(DetailActivity.getStartIntent(MapActivity.this, String.valueOf(marker.getTag())));
     }
 }

@@ -19,10 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 
+import com.spikes.jodatimeutils.JodaDatePickerDialog;
 import com.spikes.umarells.R;
 import com.spikes.umarells.shared.AppCompatActivityExt;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class CreateActivity extends AppCompatActivityExt {
 
@@ -35,12 +37,19 @@ public class CreateActivity extends AppCompatActivityExt {
     TextInputEditText mEditName;
     @BindView(R.id.edit_description)
     TextInputEditText mEditDescription;
-    @BindView(R.id.edit_name)
+    @BindView(R.id.text_dates)
     AppCompatTextView mTextDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
+    }
+
+    @OnClick(R.id.text_dates)
+    void openDatePicker(){
+        new JodaDatePickerDialog(CreateActivity.this, (datePicker, date) -> {
+            mTextDates.setText(date.toDate().toString());
+        }).show();
     }
 }
