@@ -4,3 +4,6 @@
 [submodule "app-umarells/easy-photo-picker"]
 	path = app-umarells/easy-photo-picker
 	url = https://github.com/Jameido/easy-photo-picker-android
+[submodule "app-umarells/joda-time-utils"]
+	path = app-umarells/joda-time-utils
+	url = https://github.com/Jameido/joda-time-android-utils

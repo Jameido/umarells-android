@@ -1,1 +1,1 @@
-include ':app', ':easy-location-manager', ':easy-photo-picker'
+include ':app', ':easy-location-manager', ':easy-photo-picker', ':joda-time-utils'

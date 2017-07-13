@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app-umarells.iml" filepath="$PROJECT_DIR$/app-umarells.iml" />
       <module fileurl="file://$PROJECT_DIR$/easy-location-manager/easy-location-manager.iml" filepath="$PROJECT_DIR$/easy-location-manager/easy-location-manager.iml" />
       <module fileurl="file://$PROJECT_DIR$/easy-photo-picker/easy-photo-picker.iml" filepath="$PROJECT_DIR$/easy-photo-picker/easy-photo-picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/joda-time-utils/joda-time-utils.iml" filepath="$PROJECT_DIR$/joda-time-utils/joda-time-utils.iml" />
     </modules>
   </component>
 </project>
