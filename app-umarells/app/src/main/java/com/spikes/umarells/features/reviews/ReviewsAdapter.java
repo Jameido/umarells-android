@@ -12,6 +12,7 @@
 
 package com.spikes.umarells.features.reviews;
 
+import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -38,13 +39,20 @@ public class ReviewsAdapter extends FirebaseRecyclerAdapter<Review, ReviewsAdapt
     protected void populateViewHolder(CommentViewHolder viewHolder, Review model, int position) {
         viewHolder.mTextAuthor.setText(model.getAuthorName());
         viewHolder.mTextContent.setText(model.getContent());
+        //TODO parse timestamp
+        viewHolder.mTextDate.setText(String.valueOf(model.getTimestamp()));
+        viewHolder.mRatingBar.setRating(model.getRating());
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_author)
         AppCompatTextView mTextAuthor;
+        @BindView(R.id.text_date)
+        AppCompatTextView mTextDate;
         @BindView(R.id.text_content)
         AppCompatTextView mTextContent;
+        @BindView(R.id.rating_bar)
+        AppCompatRatingBar mRatingBar;
 
         public CommentViewHolder(View itemView) {
             super(itemView);

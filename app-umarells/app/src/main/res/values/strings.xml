@@ -7,13 +7,17 @@
     <string name="help_building_site_location">Move the pin on the map to choose the building sites\'s position.</string>
     <string name="user_marker_title">Your Position</string>
     <string name="ph_description">Phasellus in libero sit amet dolor pellentesque euismod. In fringilla volutpat nisi, ac accumsan turpis fermentum in. Donec mollis nisi sit amet accumsan tempus. Phasellus ac consectetur quam, et euismod erat. Nullam nec massa porttitor, tincidunt libero non, scelerisque lorem. Donec nisi lorem, maximus eu quam sit amet, dignissim bibendum neque. Nullam id neque felis. Sed vulputate turpis tortor, varius placerat lectus blandit sit amet. Etiam in elit nec est dictum vestibulum sed sit amet mauris.</string>
+    <string name="building_site_from">From</string>
+    <string name="building_site_to">To</string>
+
 
     <!-- CREATE -->
     <string name="hint_building_site_name">Name</string>
     <string name="hint_building_site_category">Category</string>
     <string name="hint_building_site_description">Description</string>
-    <string name="hint_building_site_location">Position</string>
-    <string name="hint_building_site_dates">Dates</string>
+    <string name="hint_building_site_location">Location</string>
+    <string name="hint_building_site_dates">12 gen 2017 / 24 mar 2017</string>
+    <string name="label_building_site_dates">Dates</string>
 
     <string name="position_permissions_rationale">Location permissions are needed to locate the building site. \n</string>
     <string name="title_activity_maps">Map</string>

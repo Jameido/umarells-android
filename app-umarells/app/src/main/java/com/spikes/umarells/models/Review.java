@@ -65,6 +65,14 @@ public class Review {
         return mContent;
     }
 
+    public Integer getRating() {
+        return mRating;
+    }
+
+    public Long getTimestamp() {
+        return mTimestamp;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(PROP_AUTHOR_ID, mAuthorId);

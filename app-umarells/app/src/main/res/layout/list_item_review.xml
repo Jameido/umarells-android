@@ -11,7 +11,7 @@
   ~
   -->
 
-<android.support.v7.widget.LinearLayoutCompat
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,10 +21,30 @@
         android:id="@+id/text_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:maxLines="1"/>
+
+    <android.support.v7.widget.AppCompatRatingBar
+        android:id="@+id/rating_bar"
+        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+        android:isIndicator="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_author"
+        android:max="5"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_author"
+        android:layout_toEndOf="@+id/rating_bar"
+        android:layout_alignParentEnd="true"
         android:maxLines="1"/>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</android.support.v7.widget.LinearLayoutCompat>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rating_bar"/>
+</RelativeLayout>

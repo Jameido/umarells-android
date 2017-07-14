@@ -26,42 +26,74 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/placeholder"/>
 
-
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_name"
                 style="@style/TextAppearance.AppCompat.Large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/image_detail"
+                app:layout_constraintTop_toBottomOf="@+id/image_detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="@dimen/spacing_5"
                 tools:text="New building"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_start"
+                android:id="@+id/text_description"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="@dimen/spacing_5"
+                tools:text="New building"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_label_start"
                 style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_5"
+                app:layout_constraintEnd_toStartOf="@+id/text_end"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_description"
+                android:text="@string/building_site_from"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_label_end"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_label_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_description"
+                android:text="@string/building_site_to"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_start"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_5"
                 android:layout_marginStart="@dimen/spacing_5"
-                android:drawableStart="@drawable/ic_date_range_black_24dp"
                 app:layout_constraintEnd_toStartOf="@+id/text_end"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_name"
+                app:layout_constraintTop_toBottomOf="@+id/text_label_start"
                 tools:text="12/12/2012"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_end"
-                style="@style/TextAppearance.AppCompat.Small"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_5"
                 android:layout_marginStart="@dimen/spacing_5"
-                android:drawableStart="@drawable/ic_date_range_black_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_start"
-                app:layout_constraintTop_toBottomOf="@+id/text_name"
+                app:layout_constraintTop_toBottomOf="@+id/text_label_end"
                 tools:text="12/12/2014"/>
 
 
@@ -73,6 +105,7 @@
                 app:layout_constraintGuide_percent="0.4"/>
 
             <fragment
+                android:layout_marginTop="@dimen/spacing_5"
                 android:id="@+id/map_building_site"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="0dp"

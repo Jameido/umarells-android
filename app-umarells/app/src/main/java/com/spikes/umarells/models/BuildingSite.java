@@ -26,6 +26,7 @@ import java.util.Map;
 public class BuildingSite {
     private static final String PROP_NAME = "name";
     private static final String PROP_ADDRESS = "address";
+    private static final String PROP_DESCRIPTION = "description";
     private static final String PROP_LAT = "lat";
     private static final String PROP_LNG = "lng";
     private static final String PROP_START = "start";
@@ -34,6 +35,8 @@ public class BuildingSite {
 
     @PropertyName(PROP_NAME)
     private String mName;
+    @PropertyName(PROP_DESCRIPTION)
+    private String mDescription;
     @PropertyName(PROP_LAT)
     private Double mLat;
     @PropertyName(PROP_LNG)
@@ -48,8 +51,9 @@ public class BuildingSite {
     public BuildingSite() {
     }
 
-    public BuildingSite(String name, Double lat, Double lng, String address, Long start, Long end) {
+    public BuildingSite(String name, String description, Double lat, Double lng, String address, Long start, Long end) {
         mName = name;
+        mDescription = description;
         mLat = lat;
         mLng = lng;
         mAddress = address;
@@ -59,6 +63,10 @@ public class BuildingSite {
 
     public String getName() {
         return mName;
+    }
+
+    public String getDescription() {
+        return mDescription;
     }
 
     public Double getLat() {
@@ -84,6 +92,7 @@ public class BuildingSite {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(PROP_NAME, mName);
+        map.put(PROP_DESCRIPTION, mDescription);
         map.put(PROP_LAT, mLat);
         map.put(PROP_LNG, mLng);
         map.put(PROP_ADDRESS, mAddress);

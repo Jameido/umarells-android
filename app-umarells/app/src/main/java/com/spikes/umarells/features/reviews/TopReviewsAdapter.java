@@ -12,6 +12,7 @@
 
 package com.spikes.umarells.features.reviews;
 
+import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -36,25 +37,27 @@ public class TopReviewsAdapter extends FirebaseRecyclerAdapter<Review, TopReview
 
     @Override
     protected void populateViewHolder(ReviewViewHolder viewHolder, Review model, int position) {
-        //We show only the first comment as full (aka the description)
-        if(position == 0){
-            viewHolder.mTextContent.setMaxLines(4);
-        }else {
-            viewHolder.mTextContent.setMaxLines(2);
-        }
         viewHolder.mTextAuthor.setText(model.getAuthorName());
         viewHolder.mTextContent.setText(model.getContent());
+        //TODO parse timestamp
+        viewHolder.mTextDate.setText(String.valueOf(model.getTimestamp()));
+        viewHolder.mRatingBar.setRating(model.getRating());
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_author)
         AppCompatTextView mTextAuthor;
+        @BindView(R.id.text_date)
+        AppCompatTextView mTextDate;
         @BindView(R.id.text_content)
         AppCompatTextView mTextContent;
+        @BindView(R.id.rating_bar)
+        AppCompatRatingBar mRatingBar;
 
         public ReviewViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mTextContent.setMaxLines(2);
         }
     }
 }

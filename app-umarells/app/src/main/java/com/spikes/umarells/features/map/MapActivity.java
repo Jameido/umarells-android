@@ -241,39 +241,4 @@ public class MapActivity extends AppCompatActivityExt
         }
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, Constants.DEF_ZOOM));
     }
-
-    private void addDummyBuildingSite() {
-        LatLng location = getRandomLocation();
-        long start = getRandomTimestamp(Timestamp.valueOf("1992-01-01 00:00:00").getTime());
-
-        BuildingSite buildingSite = new BuildingSite(
-                "Building Site" + mMarkers.size(),
-                location.latitude,
-                location.longitude,
-                "Building Address" + mMarkers.size(),
-                start,
-                getRandomTimestamp(start)
-        );
-
-        mBuildingSitesDatabase.push()
-                .setValue(
-                        buildingSite.toMap(),
-                        (databaseError, databaseReference) -> {
-                            if (null != databaseError) {
-                                //TODO show error
-                            }
-                        }
-                );
-    }
-
-    public static LatLng getRandomLocation() {
-        Random rnd = new Random();
-        return new LatLng((rnd.nextDouble() * (46.035972 - 45.504675)) + 45.504675, (rnd.nextDouble() * (13.778351 - 7.8892407)) + 7.8892407);
-    }
-
-    public static long getRandomTimestamp(long start) {
-        long end = Timestamp.valueOf("2020-12-31 23:59:59").getTime();
-        long diff = end - start + 1;
-        return start + (long) (Math.random() * diff);
-    }
 }
