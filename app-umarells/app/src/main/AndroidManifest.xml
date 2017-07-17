@@ -50,7 +50,9 @@
             android:name=".features.map.MapActivity"
             android:label="@string/title_activity_map">
         </activity>
-        <activity android:name=".features.detail.DetailActivity">
+        <activity
+            android:name=".features.detail.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".features.reviews.ReviewsActivity">
         </activity>

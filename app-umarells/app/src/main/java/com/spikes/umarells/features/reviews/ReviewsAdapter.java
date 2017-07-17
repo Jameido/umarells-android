@@ -37,7 +37,7 @@ public class ReviewsAdapter extends FirebaseRecyclerAdapter<Review, ReviewsAdapt
 
     @Override
     protected void populateViewHolder(CommentViewHolder viewHolder, Review model, int position) {
-        viewHolder.mTextAuthor.setText(model.getAuthorName());
+        viewHolder.mTextTitle.setText(model.getTitle());
         viewHolder.mTextContent.setText(model.getContent());
         //TODO parse timestamp
         viewHolder.mTextDate.setText(String.valueOf(model.getTimestamp()));
@@ -45,8 +45,8 @@ public class ReviewsAdapter extends FirebaseRecyclerAdapter<Review, ReviewsAdapt
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_author)
-        AppCompatTextView mTextAuthor;
+        @BindView(R.id.text_title)
+        AppCompatTextView mTextTitle;
         @BindView(R.id.text_date)
         AppCompatTextView mTextDate;
         @BindView(R.id.text_content)

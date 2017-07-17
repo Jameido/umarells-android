@@ -61,6 +61,10 @@ public class Review {
         return mAuthorName;
     }
 
+    public String getTitle() {
+        return mTitle;
+    }
+
     public String getContent() {
         return mContent;
     }

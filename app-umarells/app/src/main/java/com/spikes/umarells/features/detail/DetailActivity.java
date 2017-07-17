@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,6 +60,13 @@ public class DetailActivity extends AppCompatActivityExt
         return startIntent;
     }
 
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.text_name)
+    AppCompatTextView mTextName;
+    @BindView(R.id.text_description)
+    AppCompatTextView mTextDescription;
     @BindView(R.id.text_start)
     AppCompatTextView mTextStart;
     @BindView(R.id.text_end)
@@ -79,6 +87,10 @@ public class DetailActivity extends AppCompatActivityExt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(null);
 
         Bundle extras = getIntent().getExtras();
         if (null != extras && extras.containsKey(EXTRA_ID)) {
@@ -149,7 +161,7 @@ public class DetailActivity extends AppCompatActivityExt
                                 .load(url)
                                 .placeholder(R.drawable.placeholder)
                                 .error(R.drawable.placeholder)
-                                .fitCenter()
+                                .centerCrop()
                                 .thumbnail(0.4f)
                                 .dontAnimate()
                                 .into(mImageDetail);
@@ -174,7 +186,8 @@ public class DetailActivity extends AppCompatActivityExt
 
     private void fillBuildingSiteData() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        getSupportActionBar().setTitle(mBuildingSite.getName());
+        mTextName.setText(mBuildingSite.getName());
+        mTextDescription.setText(mBuildingSite.getDescription());
         mTextStart.setText(dateFormat.format(new Date(mBuildingSite.getStart())));
         mTextEnd.setText(dateFormat.format(mBuildingSite.getEnd()));
         mTextAddress.setText(mBuildingSite.getAddress());
