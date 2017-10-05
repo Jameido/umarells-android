@@ -63,8 +63,6 @@ public class DetailActivity extends AppCompatActivityExt
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.text_name)
-    AppCompatTextView mTextName;
     @BindView(R.id.text_description)
     AppCompatTextView mTextDescription;
     @BindView(R.id.text_start)
@@ -185,9 +183,8 @@ public class DetailActivity extends AppCompatActivityExt
     }
 
     private void fillBuildingSiteData() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        mTextName.setText(mBuildingSite.getName());
         mTextDescription.setText(mBuildingSite.getDescription());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         mTextStart.setText(dateFormat.format(new Date(mBuildingSite.getStart())));
         mTextEnd.setText(dateFormat.format(mBuildingSite.getEnd()));
         mTextAddress.setText(mBuildingSite.getAddress());
